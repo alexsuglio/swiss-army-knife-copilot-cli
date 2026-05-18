@@ -8,6 +8,7 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - Hard reset by default so every run starts clean
 - Optional append mode for practice runs
 - One master walkthrough and one read-aloud speaker script
+- A universal branch model where every scenario branch mirrors the same repo contents
 
 ## Project layout
 
@@ -30,6 +31,14 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - reset (default): always restore exact baseline state before a scenario
 - append: keep current changes and continue iteratively
 
+## Branch model
+
+- `main` is the source of truth for the entire sandbox.
+- `scenario-0-init` through `scenario-4-init` are reset branches that mirror `main`.
+- Scripts, docs, sample app files, and helper shell files are intended to be the same across all branches.
+- Scenario differences come from which prompt you run, not from branch-specific file layouts.
+- If you add or change repo files, run `bash scripts/init-snapshots.sh` to refresh all scenario branches from `main`.
+
 Switch modes:
 
 - bash scripts/demo-mode.sh reset
@@ -47,3 +56,4 @@ Switch modes:
 
 - The scripts are designed for macOS and bash/zsh terminals.
 - If you are presenting, follow docs/speaker-script.md line by line.
+- If you ever notice a helper script missing after a reset, run `bash scripts/init-snapshots.sh` from `main` and reset again.

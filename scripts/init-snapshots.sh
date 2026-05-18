@@ -5,9 +5,13 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$ROOT_DIR"
 
+MAIN_BRANCH="main"
+
+current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo $MAIN_BRANCH)"
+
 if [ ! -d .git ]; then
   git init >/dev/null
-  git branch -M main
+  git branch -M "$MAIN_BRANCH"
 fi
 
 if ! git config user.email >/dev/null; then
@@ -27,10 +31,16 @@ fi
 for id in 0 1 2 3 4; do
   branch="scenario-${id}-init"
   if git show-ref --verify --quiet "refs/heads/$branch"; then
-    echo "Snapshot already exists: $branch"
+    if [ "$current_branch" = "$branch" ]; then
+      echo "Snapshot current branch left as-is: $branch"
+      echo "To fully refresh it from $MAIN_BRANCH, checkout $MAIN_BRANCH first and rerun this script."
+    else
+      git branch -f "$branch" "$MAIN_BRANCH"
+      echo "Refreshed snapshot branch from $MAIN_BRANCH: $branch"
+    fi
   else
-    git branch "$branch" main
-    echo "Created snapshot branch: $branch"
+    git branch "$branch" "$MAIN_BRANCH"
+    echo "Created snapshot branch from $MAIN_BRANCH: $branch"
   fi
 done
 
