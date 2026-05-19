@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Purpose: Verify the demo sandbox is ready before you present or practice.
+# Usage: bash scripts/preflight-check.sh
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

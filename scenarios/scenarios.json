@@ -20,9 +20,9 @@
       "durationMinutes": 6,
       "baselineBranch": "scenario-1-init",
       "objective": "Refactor imperative loop to reduce while keeping behavior.",
-      "where": "sample-app/src/calculator.js and sample-app/tests/calculator.test.js",
-      "prompt": "Refactor totalPrice in src/calculator.js to use reduce, keep behavior unchanged, and keep code easy to read.",
-      "verify": "Run npm test and confirm all tests pass.",
+      "where": "sample-app/src/scenario_1_calculator.js and sample-app/tests/scenario_1_calculator.test.js",
+      "prompt": "Refactor totalPrice in src/scenario_1_calculator.js to use reduce, keep behavior unchanged, and keep code easy to read.",
+      "verify": "Run npm run test:1 and confirm all scenario 1 tests pass.",
       "fallback": "Ask Copilot to only propose patch first, then apply after review."
     },
     {
@@ -31,9 +31,9 @@
       "durationMinutes": 6,
       "baselineBranch": "scenario-2-init",
       "objective": "Diagnose and fix an edge-case bug from a failing test.",
-      "where": "sample-app/src/discount.js and sample-app/tests/discount.test.js",
-      "prompt": "One test in tests/discount.test.js is failing. Find the bug in src/discount.js and fix only the root cause.",
-      "verify": "Run npm test and confirm the discount tests pass.",
+      "where": "sample-app/src/scenario_2_discount.js and sample-app/tests/scenario_2_discount.test.js",
+      "prompt": "Several tests in tests/scenario_2_discount.test.js are failing. Find the bug in src/scenario_2_discount.js and fix only the root cause.",
+      "verify": "Run npm run test:2 and confirm the scenario 2 discount tests pass.",
       "fallback": "Paste failing stack trace into Copilot and ask for minimal fix."
     },
     {
@@ -42,9 +42,9 @@
       "durationMinutes": 7,
       "baselineBranch": "scenario-3-init",
       "objective": "Add a validator and tests from a concise natural-language requirement.",
-      "where": "sample-app/src/validator.js and sample-app/tests/validator.test.js",
-      "prompt": "Add validateUserProfile to src/validator.js. Required fields: id, name, email. Return { ok, errors }. Add tests for valid input, missing fields, and invalid email.",
-      "verify": "Run npm test and show new test coverage for validator paths.",
+      "where": "sample-app/src/scenario_3_validator.js and sample-app/tests/scenario_3_validator.test.js",
+      "prompt": "Add validateUserProfile to src/scenario_3_validator.js. Required fields: id, name, email. Return { ok, errors }. Add tests for valid input, missing fields, invalid email, and whitespace-only values.",
+      "verify": "Run npm run test:3 and show scenario 3 coverage for validator paths.",
       "fallback": "Ask Copilot to generate tests first, then implement to satisfy tests."
     },
     {
@@ -53,9 +53,9 @@
       "durationMinutes": 8,
       "baselineBranch": "scenario-4-init",
       "objective": "Show agentic flow: test, refactor parser, document result.",
-      "where": "sample-app/src/csvLegacyParser.js and sample-app/tests/csvLegacyParser.test.js",
-      "prompt": "Create/expand tests for src/csvLegacyParser.js, refactor parsing to be safer for malformed rows, and add a short README section describing behavior changes.",
-      "verify": "Run npm test and confirm parser tests pass.",
+      "where": "sample-app/src/scenario_4_csvLegacyParser.js and sample-app/tests/scenario_4_csvLegacyParser.test.js",
+      "prompt": "Create or expand tests for src/scenario_4_csvLegacyParser.js, refactor parsing to be safer for malformed rows, and add a short README section describing behavior changes.",
+      "verify": "Run npm run test:4 and confirm the parser tests pass.",
       "fallback": "Time-box to tests only if latency is high."
     }
   ]

@@ -57,11 +57,11 @@ Action:
 - Prompt scenario 1 text.
 
 Where:
-- Primary file is sample-app/src/calculator.js.
+- Primary file is sample-app/src/scenario_1_calculator.js.
 
 Verify:
 - cd sample-app
-- npm test
+- npm run test:1
 
 Recover:
 - Ask Copilot to provide diff first, then apply after review.
@@ -76,10 +76,10 @@ Action:
 - Prompt scenario 2 text.
 
 Where:
-- Primary file is sample-app/src/discount.js.
+- Primary file is sample-app/src/scenario_2_discount.js.
 
 Verify:
-- npm test
+- npm run test:2
 
 Recover:
 - Paste failing test message and ask for minimal patch only.
@@ -94,11 +94,11 @@ Action:
 - Prompt scenario 3 text.
 
 Where:
-- Primary file is sample-app/src/validator.js.
-- New or updated tests in sample-app/tests/validator.test.js.
+- Primary file is sample-app/src/scenario_3_validator.js.
+- New or updated tests in sample-app/tests/scenario_3_validator.test.js.
 
 Verify:
-- npm test
+- npm run test:3
 
 Recover:
 - Ask Copilot to generate tests first, implementation second.
@@ -113,11 +113,11 @@ Action:
 - Prompt scenario 4 text.
 
 Where:
-- Primary file is sample-app/src/csvLegacyParser.js.
+- Primary file is sample-app/src/scenario_4_csvLegacyParser.js.
 - Optional docs update in README.
 
 Verify:
-- npm test
+- npm run test:4
 
 Recover:
 - Time-box to test expansion only if latency is high.

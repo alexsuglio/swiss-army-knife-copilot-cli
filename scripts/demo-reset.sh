@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Purpose: Reset the repo to a clean scenario baseline branch for repeatable demos.
+# Usage: bash scripts/demo-reset.sh <scenario-id>
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

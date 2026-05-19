@@ -19,7 +19,7 @@
 ## Test failures after edits
 
 - Ask Copilot for minimal fix tied to failing test output
-- Re-run npm test
+- Re-run the scenario-specific test command, such as `npm run test:2`
 - If needed, reset scenario and retry
 
 ## Slow model responses

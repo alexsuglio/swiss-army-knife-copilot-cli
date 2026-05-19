@@ -17,6 +17,14 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - sample-app/: Node.js app used for all live edits
 - docs/: walkthrough, speaker script, and troubleshooting
 
+## Scenario file layout
+
+- `sample-app/src/scenario_1_calculator.js`
+- `sample-app/src/scenario_2_discount.js`
+- `sample-app/src/scenario_3_validator.js`
+- `sample-app/src/scenario_4_csvLegacyParser.js`
+- Matching tests live in `sample-app/tests/` with the same numbered names.
+
 ## Quick start
 
 1. cd /Users/alexsuglio/copilot-cli-demo-sandbox
@@ -50,7 +58,23 @@ Switch modes:
 2. cd sample-app
 3. copilot
 4. Use prompt text from scenarios/scenarios.json
-5. Verify with npm test
+5. Verify with npm run test:1
+
+## Test commands
+
+- `npm run test:1` runs only scenario 1 tests.
+- `npm run test:2` runs only scenario 2 tests.
+- `npm run test:3` runs only scenario 3 tests.
+- `npm run test:4` runs only scenario 4 tests.
+- `npm run test:all` runs the full suite.
+- `npm test` also runs the full suite.
+
+## Scenario behavior notes
+
+- Scenario 1 starts green and is meant for a refactor-only demo.
+- Scenario 2 starts with an intentional bug so the failure is visible before the fix.
+- Scenario 3 includes expanded validation coverage.
+- Scenario 4 includes expanded malformed-row parser coverage.
 
 ## Notes
 
