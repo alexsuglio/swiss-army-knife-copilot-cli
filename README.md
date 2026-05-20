@@ -26,11 +26,23 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 | Step | Purpose |
 | :--- | :--- |
 | 1. `cd swiss-army-knife-copilot-cli` | Enters the project root directory |
-| 2. `bash scripts/preflight-check.sh` | Verifies required tools and environment |
-| 3. `bash scripts/init-snapshots.sh` | Creates scenario snapshot branches if missing |
-| 4. `bash scripts/demo-reset.sh 0` | Resets repo to scenario 0 baseline |
-| 5. Open a terminal in `sample-app` and run `npm install` | Prepares Node.js app dependencies (none by default) |
-| 6. Start the walkthrough in `docs/walkthrough.md` | Begins the guided demo |
+| 2. `bash scripts/demo-first-run.sh` | Runs preflight, enables reset mode, creates snapshots, and lands on scenario 0 |
+| 3. Open a terminal in `sample-app` and run `npm install` | Prepares Node.js app dependencies (none by default) |
+| 4. Start the walkthrough in `docs/walkthrough.md` | Begins the guided demo |
+
+## Two main scripts
+
+- `bash scripts/demo-first-run.sh`
+	- Use right after cloning.
+	- Runs preflight checks.
+	- Sets demo mode to `reset`.
+	- Creates missing `scenario-N-init` branches.
+	- Resets the repo to `scenario-0-init`.
+
+- `bash scripts/demo-flush.sh`
+	- Use when you are done practicing or presenting and want the sandbox back in its prepared baseline state.
+	- Returns to `main`, cleans the working tree, ensures reset mode, ensures snapshot branches exist, and resets to `scenario-0-init`.
+	- Pass `--refresh` if you intentionally changed `main` and want all snapshot branches rebuilt from it.
 
 ## Demo modes
 - reset (default): always restore exact baseline state before a scenario
@@ -63,21 +75,14 @@ Switch modes:
 
 ## When you're done with the demo
 
-If you want the sandbox back in a clean, brand-new state for the next run:
+If you want the sandbox back in a clean, prepared state for the next run:
 
-1. git checkout main
-2. bash scripts/demo-mode.sh reset
-3. bash scripts/init-snapshots.sh
-4. bash scripts/demo-reset.sh 0
-
-This puts you back on a clean scenario baseline with reset mode enabled.
+1. `bash scripts/demo-flush.sh`
 
 If you changed repo files on `main` and want every scenario branch refreshed from that updated baseline:
 
-1. git checkout main
-2. Make sure your working tree is clean
-3. bash scripts/init-snapshots.sh --refresh
-4. bash scripts/demo-reset.sh 0
+1. Make sure your working tree is clean enough to switch to `main`
+2. `bash scripts/demo-flush.sh --refresh`
 
 Use `--refresh` only when you intentionally want to move existing `scenario-N-init` branches to match the current `main` branch.
 

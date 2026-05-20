@@ -6,10 +6,7 @@ This is the quick personal version to keep beside you during the demo. It is wri
 
 Do this in the repo root:
 
-1. `bash scripts/preflight-check.sh`
-2. `bash scripts/init-snapshots.sh`
-3. `bash scripts/demo-mode.sh reset`
-4. `bash scripts/demo-reset.sh 0`
+1. `bash scripts/demo-first-run.sh`
 
 Then open a terminal in `sample-app` and make sure dependencies are ready:
 
@@ -21,6 +18,16 @@ What to notice:
 - Preflight should complete cleanly.
 - Reset mode should be on.
 - You should be able to bounce between scenarios and always get back to a known state.
+
+## Full Flush
+
+When you are fully done and want the sandbox put back into its prepared baseline state from repo root:
+
+1. `bash scripts/demo-flush.sh`
+
+If you intentionally updated `main` and want the snapshot branches rebuilt from it:
+
+1. `bash scripts/demo-flush.sh --refresh`
 
 ## Overall Rhythm
 
