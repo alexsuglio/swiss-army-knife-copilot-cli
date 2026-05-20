@@ -23,18 +23,14 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - Matching tests live in `sample-app/tests/` with the same numbered names.
 
 ## Quick start
-(*Enters the project root directory*)
-1. cd swiss-army-knife-copilot-cli
-(*Verifies required tools and environment*)
-2. bash scripts/preflight-check.sh
-(*Creates scenario snapshot branches if missing*)
-3. bash scripts/init-snapshots.sh
-(*Resets repo to scenario 0 baseline*)
-4. bash scripts/demo-reset.sh 0
-(*Prepares Node.js app dependencies (none by default)*)
-5. Open a terminal in sample-app and run npm install
-(*Begins the guided demo*)
-6. Start the walkthrough in docs/walkthrough.md
+| Step | Purpose |
+| :--- | :--- |
+| 1. `cd swiss-army-knife-copilot-cli` | Enters the project root directory |
+| 2. `bash scripts/preflight-check.sh` | Verifies required tools and environment |
+| 3. `bash scripts/init-snapshots.sh` | Creates scenario snapshot branches if missing |
+| 4. `bash scripts/demo-reset.sh 0` | Resets repo to scenario 0 baseline |
+| 5. Open a terminal in `sample-app` and run `npm install` | Prepares Node.js app dependencies (none by default) |
+| 6. Start the walkthrough in `docs/walkthrough.md` | Begins the guided demo |
 
 ## Demo modes
 - reset (default): always restore exact baseline state before a scenario
