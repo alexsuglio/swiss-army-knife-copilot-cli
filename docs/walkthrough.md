@@ -28,6 +28,18 @@ Use this pattern every time:
 - Verify: observable proof
 - Recover: what to do if output is unexpected
 
+## Branch guide
+
+For each scenario, you should be on that scenario's matching snapshot branch:
+
+- Scenario 0 -> `scenario-0-init`
+- Scenario 1 -> `scenario-1-init`
+- Scenario 2 -> `scenario-2-init`
+- Scenario 3 -> `scenario-3-init`
+- Scenario 4 -> `scenario-4-init`
+
+You normally do not need to check out these branches manually. Running `bash scripts/demo-reset.sh <scenario-id>` will reset the repo and move you onto the correct branch for that scenario when reset mode is enabled.
+
 ## Scenario 0 Warmup Explain
 
 Context:

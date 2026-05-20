@@ -23,12 +23,18 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - Matching tests live in `sample-app/tests/` with the same numbered names.
 
 ## Quick start
-1. cd swiss-army-knife-copilot-cli        # Enter the project root directory
-2. bash scripts/preflight-check.sh        # Verify required tools and environment
-3. bash scripts/init-snapshots.sh         # Create scenario snapshot branches if missing
-4. bash scripts/demo-reset.sh 0           # Reset repo to scenario 0 baseline
-5. Open a terminal in sample-app and run npm install   # Prepare Node.js app dependencies (none by default)
-6. Start the walkthrough in docs/walkthrough.md        # Begin the guided demo
+(*Enters the project root directory*)
+1. cd swiss-army-knife-copilot-cli
+(*Verifies required tools and environment*)
+2. bash scripts/preflight-check.sh
+(*Creates scenario snapshot branches if missing*)
+3. bash scripts/init-snapshots.sh
+(*Resets repo to scenario 0 baseline*)
+4. bash scripts/demo-reset.sh 0
+(*Prepares Node.js app dependencies (none by default)*)
+5. Open a terminal in sample-app and run npm install
+(*Begins the guided demo*)
+6. Start the walkthrough in docs/walkthrough.md
 
 ## Demo modes
 - reset (default): always restore exact baseline state before a scenario
@@ -58,6 +64,47 @@ Switch modes:
 3. copilot
 4. Use prompt text from scenarios/scenarios.json
 5. Verify with npm run test:1
+
+## When you're done with the demo
+
+If you want the sandbox back in a clean, brand-new state for the next run:
+
+1. git checkout main
+2. bash scripts/demo-mode.sh reset
+3. bash scripts/init-snapshots.sh
+4. bash scripts/demo-reset.sh 0
+
+This puts you back on a clean scenario baseline with reset mode enabled.
+
+If you changed repo files on `main` and want every scenario branch refreshed from that updated baseline:
+
+1. git checkout main
+2. Make sure your working tree is clean
+3. bash scripts/init-snapshots.sh --refresh
+4. bash scripts/demo-reset.sh 0
+
+Use `--refresh` only when you intentionally want to move existing `scenario-N-init` branches to match the current `main` branch.
+
+## If you need to reset a scenario
+
+If a scenario gets messy during a demo or practice run:
+
+1. Return to the repo root
+2. Run `bash scripts/demo-reset.sh <scenario-id>`
+
+Examples:
+
+- `bash scripts/demo-reset.sh 1`
+- `bash scripts/demo-reset.sh 2`
+- `bash scripts/demo-reset.sh 3`
+- `bash scripts/demo-reset.sh 4`
+
+This restores that scenario back to its baseline branch so you can retry the prompt from a known clean state.
+
+If reset does not happen, check whether append mode is enabled:
+
+1. Run `bash scripts/demo-mode.sh reset`
+2. Re-run `bash scripts/demo-reset.sh <scenario-id>`
 
 ## Test commands
 - `npm run test:1` runs only scenario 1 tests.
