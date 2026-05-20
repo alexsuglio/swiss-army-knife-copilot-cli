@@ -23,12 +23,12 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - Matching tests live in `sample-app/tests/` with the same numbered names.
 
 ## Quick start
-1. cd /Users/alexsuglio/copilot-cli-demo-sandbox
-2. bash scripts/preflight-check.sh
-3. bash scripts/init-snapshots.sh
-4. bash scripts/demo-reset.sh 0
-5. Open a terminal in sample-app and run npm install
-6. Start the walkthrough in docs/walkthrough.md
+1. cd swiss-army-knife-copilot-cli        # Enter the project root directory
+2. bash scripts/preflight-check.sh        # Verify required tools and environment
+3. bash scripts/init-snapshots.sh         # Create scenario snapshot branches if missing
+4. bash scripts/demo-reset.sh 0           # Reset repo to scenario 0 baseline
+5. Open a terminal in sample-app and run npm install   # Prepare Node.js app dependencies (none by default)
+6. Start the walkthrough in docs/walkthrough.md        # Begin the guided demo
 
 ## Demo modes
 - reset (default): always restore exact baseline state before a scenario
@@ -39,7 +39,13 @@ A reusable, local-first playground for demonstrating Copilot CLI to new and expe
 - `scenario-0-init` through `scenario-4-init` are reset branches that mirror `main`.
 - Scripts, docs, sample app files, and helper shell files are intended to be the same across all branches.
 - Scenario differences come from which prompt you run, not from branch-specific file layouts.
-- If you add or change repo files, run `bash scripts/init-snapshots.sh` to refresh all scenario branches from `main`.
+- If you add or change repo files, run `bash scripts/init-snapshots.sh --refresh` (from `main`) to refresh all scenario branches from `main`.
+
+Snapshot safety behavior:
+
+- `bash scripts/init-snapshots.sh` creates missing `scenario-N-init` branches only.
+- It does not auto-commit your local changes.
+- It does not move existing scenario branches unless you pass `--refresh`.
 
 Switch modes:
 

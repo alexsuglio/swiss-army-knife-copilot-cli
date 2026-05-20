@@ -1,44 +1,73 @@
 #!/usr/bin/env bash
-# Purpose: Create or refresh the scenario-N-init snapshot branches from main.
-# Usage: bash scripts/init-snapshots.sh
+# Purpose: Safely create or refresh scenario-N-init snapshot branches from main.
+# Usage:
+#   bash scripts/init-snapshots.sh            # create missing snapshot branches only
+#   bash scripts/init-snapshots.sh --refresh  # also refresh existing snapshot branches from main
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MAIN_BRANCH="main"
+REFRESH="false"
+
+for arg in "$@"; do
+  case "$arg" in
+    --refresh)
+      REFRESH="true"
+      ;;
+    -h|--help)
+      echo "Usage: bash scripts/init-snapshots.sh [--refresh]"
+      echo
+      echo "Default: create missing snapshot branches only."
+      echo "--refresh: force-move existing snapshot branches to main."
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $arg"
+      echo "Usage: bash scripts/init-snapshots.sh [--refresh]"
+      exit 1
+      ;;
+  esac
+done
 
 cd "$ROOT_DIR"
 
-MAIN_BRANCH="main"
-
-current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo $MAIN_BRANCH)"
-
 if [ ! -d .git ]; then
-  git init >/dev/null
-  git branch -M "$MAIN_BRANCH"
+  echo "Git repository not initialized. Run: git init"
+  exit 1
 fi
 
-if ! git config user.email >/dev/null; then
-  git config user.email "demo@example.com"
-fi
-if ! git config user.name >/dev/null; then
-  git config user.name "Copilot Demo"
+if ! git show-ref --verify --quiet "refs/heads/$MAIN_BRANCH"; then
+  echo "Main branch '$MAIN_BRANCH' not found. Create it first."
+  exit 1
 fi
 
-if [ -z "$(git status --porcelain)" ]; then
-  echo "Working tree clean."
-else
-  git add .
-  git commit -m "chore: initialize copilot cli demo sandbox" >/dev/null || true
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+if [ "$REFRESH" = "true" ]; then
+  if [ "$current_branch" != "$MAIN_BRANCH" ]; then
+    echo "--refresh must be run from '$MAIN_BRANCH'. Current branch: $current_branch"
+    echo "Run: git checkout $MAIN_BRANCH"
+    exit 1
+  fi
+
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "Working tree is dirty. Commit or stash changes before --refresh."
+    exit 1
+  fi
 fi
 
 for id in 0 1 2 3 4; do
   branch="scenario-${id}-init"
   if git show-ref --verify --quiet "refs/heads/$branch"; then
-    if [ "$current_branch" = "$branch" ]; then
-      echo "Snapshot current branch left as-is: $branch"
-      echo "To fully refresh it from $MAIN_BRANCH, checkout $MAIN_BRANCH first and rerun this script."
+    if [ "$REFRESH" = "true" ]; then
+      if [ "$current_branch" = "$branch" ]; then
+        echo "Skipped active branch: $branch"
+      else
+        git branch -f "$branch" "$MAIN_BRANCH"
+        echo "Refreshed snapshot branch from $MAIN_BRANCH: $branch"
+      fi
     else
-      git branch -f "$branch" "$MAIN_BRANCH"
-      echo "Refreshed snapshot branch from $MAIN_BRANCH: $branch"
+      echo "Exists (left unchanged): $branch"
     fi
   else
     git branch "$branch" "$MAIN_BRANCH"
@@ -46,4 +75,9 @@ for id in 0 1 2 3 4; do
   fi
 done
 
-echo "Snapshot initialization complete."
+if [ "$REFRESH" = "true" ]; then
+  echo "Snapshot refresh complete."
+else
+  echo "Snapshot initialization complete (create-only mode)."
+  echo "Use --refresh to update existing snapshot branches from $MAIN_BRANCH."
+fi
