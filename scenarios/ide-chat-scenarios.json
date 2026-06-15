@@ -1,0 +1,81 @@
+{
+  "version": "1.0.0",
+  "track": "vscode-chat",
+  "recommendedMode": "reset",
+  "scenarios": [
+    {
+      "id": "chat-1",
+      "name": "Explain unfamiliar parser",
+      "objective": "Use /explain to understand legacy-ish code before editing anything.",
+      "where": "sample-app/src/scenario_4_csvLegacyParser.js",
+      "examplePrompts": [
+        "/explain #file:sample-app/src/scenario_4_csvLegacyParser.js",
+        "Explain how this parser treats malformed rows and what tradeoffs it makes."
+      ],
+      "verify": [
+        "No file changes are required.",
+        "Confirm the explanation mentions blank lines, trimming, and malformed row handling."
+      ],
+      "fallback": "Highlight the reduce block and ask: /explain #selection"
+    },
+    {
+      "id": "chat-2",
+      "name": "Fix a targeted bug",
+      "objective": "Use /fix or a focused natural-language prompt to repair a known bug with minimal change.",
+      "where": "sample-app/src/scenario_2_discount.js and sample-app/tests/scenario_2_discount.test.js",
+      "examplePrompts": [
+        "/fix The discount helper is adding the wrong amount after rounding. Make the smallest change that makes the failing tests pass.",
+        "Read the failing tests for scenario 2, find the root cause in scenario_2_discount.js, and suggest the smallest safe patch."
+      ],
+      "verify": [
+        "Run: cd sample-app && npm run test:2",
+        "Confirm the final code no longer adds an extra cent."
+      ],
+      "fallback": "Paste the failing assertion from npm run test:2 into Chat and ask for a root-cause-only fix."
+    },
+    {
+      "id": "chat-3",
+      "name": "Generate tests for an untested utility",
+      "objective": "Use /tests to generate a first test suite for a utility that currently has no tests.",
+      "where": "sample-app/src/ide_chat_releaseNotes.js",
+      "examplePrompts": [
+        "/tests #file:sample-app/src/ide_chat_releaseNotes.js",
+        "Generate node:test coverage for empty input, trimming, optional highlights, and skipped invalid entries in ide_chat_releaseNotes.js."
+      ],
+      "verify": [
+        "Create the new test file under sample-app/tests/.",
+        "Run only the new tests with node --test <new-test-file>."
+      ],
+      "fallback": "Ask Copilot to propose test cases first, then ask it to turn them into node:test tests."
+    },
+    {
+      "id": "chat-4",
+      "name": "Use @workspace for multi-file reasoning",
+      "objective": "Use @workspace to trace behavior across scripts, source files, tests, and docs.",
+      "where": "Whole repository, especially scripts/, scenarios/, sample-app/src/, and sample-app/tests/",
+      "examplePrompts": [
+        "@workspace Where do reset behavior, commit safeguards, and sample-app verification commands live in this repo?",
+        "@workspace If I want to explain how pricing, validation, and parser behavior are covered in this repo, which files should I show and why?"
+      ],
+      "verify": [
+        "The answer should cite multiple files, not just one.",
+        "The answer should mention both scripts and sample-app files."
+      ],
+      "fallback": "Use #file references for README.md, scripts/demo-clean-slate.sh, and sample-app/package.json, then ask the same question."
+    },
+    {
+      "id": "chat-5",
+      "name": "Optional customization walkthrough",
+      "objective": "Show how repository instructions shape Copilot Chat responses for this sandbox.",
+      "where": ".github/copilot-instructions.md",
+      "examplePrompts": [
+        "What repo-level Copilot instructions are active here, and how should they affect your edits?",
+        "Using the repository instructions, propose a safe plan for fixing scenario 2 without broad refactors."
+      ],
+      "verify": [
+        "The response should mention minimal edits, testing after changes, and avoiding unrelated churn."
+      ],
+      "fallback": "Open .github/copilot-instructions.md and ask Chat to summarize the top three instructions it will follow."
+    }
+  ]
+}

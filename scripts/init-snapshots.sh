@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Purpose: Safely create or refresh scenario-N-init snapshot branches from main.
+# Purpose: Safely create or refresh scenario-N-init snapshot branches from the baseline branch.
 # Usage:
 #   bash scripts/init-snapshots.sh            # create missing snapshot branches only
-#   bash scripts/init-snapshots.sh --refresh  # also refresh existing snapshot branches from main
+#   bash scripts/init-snapshots.sh --refresh  # also refresh existing snapshot branches from the baseline branch
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-MAIN_BRANCH="main"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/demo-common.sh"
 REFRESH="false"
 
 for arg in "$@"; do
@@ -18,7 +17,7 @@ for arg in "$@"; do
       echo "Usage: bash scripts/init-snapshots.sh [--refresh]"
       echo
       echo "Default: create missing snapshot branches only."
-      echo "--refresh: force-move existing snapshot branches to main."
+      echo "--refresh: force-move existing snapshot branches to the baseline branch."
       exit 0
       ;;
     *)
@@ -30,23 +29,21 @@ for arg in "$@"; do
 done
 
 cd "$ROOT_DIR"
+ensure_git_repo
 
-if [ ! -d .git ]; then
-  echo "Git repository not initialized. Run: git init"
-  exit 1
-fi
+BASELINE_BRANCH="$(resolve_baseline_branch)"
 
-if ! git show-ref --verify --quiet "refs/heads/$MAIN_BRANCH"; then
-  echo "Main branch '$MAIN_BRANCH' not found. Create it first."
+if ! git show-ref --verify --quiet "refs/heads/$BASELINE_BRANCH"; then
+  echo "Baseline branch '$BASELINE_BRANCH' not found. Run: bash scripts/demo-setup.sh"
   exit 1
 fi
 
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
 if [ "$REFRESH" = "true" ]; then
-  if [ "$current_branch" != "$MAIN_BRANCH" ]; then
-    echo "--refresh must be run from '$MAIN_BRANCH'. Current branch: $current_branch"
-    echo "Run: git checkout $MAIN_BRANCH"
+  if [ "$current_branch" != "$BASELINE_BRANCH" ]; then
+    echo "--refresh must be run from '$BASELINE_BRANCH'. Current branch: $current_branch"
+    echo "Run: git checkout $BASELINE_BRANCH"
     exit 1
   fi
 
@@ -63,15 +60,15 @@ for id in 0 1 2 3 4; do
       if [ "$current_branch" = "$branch" ]; then
         echo "Skipped active branch: $branch"
       else
-        git branch -f "$branch" "$MAIN_BRANCH"
-        echo "Refreshed snapshot branch from $MAIN_BRANCH: $branch"
+        git branch -f "$branch" "$BASELINE_BRANCH"
+        echo "Refreshed snapshot branch from $BASELINE_BRANCH: $branch"
       fi
     else
       echo "Exists (left unchanged): $branch"
     fi
   else
-    git branch "$branch" "$MAIN_BRANCH"
-    echo "Created snapshot branch from $MAIN_BRANCH: $branch"
+    git branch "$branch" "$BASELINE_BRANCH"
+    echo "Created snapshot branch from $BASELINE_BRANCH: $branch"
   fi
 done
 
@@ -79,5 +76,5 @@ if [ "$REFRESH" = "true" ]; then
   echo "Snapshot refresh complete."
 else
   echo "Snapshot initialization complete (create-only mode)."
-  echo "Use --refresh to update existing snapshot branches from $MAIN_BRANCH."
+  echo "Use --refresh to update existing snapshot branches from $BASELINE_BRANCH."
 fi

@@ -1,128 +1,154 @@
-# Copilot CLI Demo Swiss Army Knife 🛠️ 🧰
+# Swiss Army Knife GitHub Copilot 🛠️🧰
 
-A reusable, local-first playground for demonstrating Copilot CLI to new and experienced engineers.
+A reusable, local-first sandbox for **both GitHub Copilot CLI** and **GitHub Copilot Chat in VS Code**.
+
+This repository keeps the original CLI-demo strengths—scenario registry, reset/append modes, resettable snapshot branches, and a shared Node.js sample app—while adding a curated VS Code Chat track, one primary setup flow, one primary clean-slate reset flow, and commit safeguards that block accidental demo commits by default.
 
 ## What this gives you
-- A 30-minute demo path with clear scenarios
-- Hard reset by default so every run starts clean
-- Optional append mode for practice runs
-- One master walkthrough and one read-aloud speaker script
-- A universal branch model where every scenario branch mirrors the same repo contents
+- One repo for **repeatable Copilot CLI demos**
+- One repo for **repeatable VS Code Copilot Chat demos**
+- One **setup/bootstrap** command for the whole sandbox
+- One **full clean-slate reset** command for the next demo
+- A **commit safeguard** that blocks accidental commits unless you intentionally override it
+- A shared `sample-app/` that works for both tracks
+
+## Recommended commands
+| Goal | Command |
+| :--- | :--- |
+| Bootstrap the whole sandbox | `bash scripts/demo-setup.sh` |
+| Run the combined environment preflight only | `bash scripts/preflight-check.sh` |
+| Reset to a CLI scenario | `bash scripts/run-scenario.sh <scenario-id>` |
+| Restore the repo to the presenter baseline | `bash scripts/demo-clean-slate.sh` |
+| Refresh snapshot branches after intentional baseline updates | `bash scripts/demo-clean-slate.sh --refresh` |
+| Temporarily allow an intentional commit | `bash scripts/allow-commits.sh` |
+| Re-enable commit blocking | `bash scripts/block-commits.sh` |
+
+Legacy wrappers still work:
+- `bash scripts/demo-first-run.sh` → setup wrapper
+- `bash scripts/demo-flush.sh` → clean-slate wrapper
 
 ## Project layout
-- scripts/: automation for preflight, reset, mode, and snapshots
-- scenarios/: canonical prompts and expected outcomes
-- sample-app/: Node.js app used for all live edits
-- docs/: walkthrough, speaker script, and troubleshooting
-
-## Scenario file layout
-- `sample-app/src/scenario_1_calculator.js`
-- `sample-app/src/scenario_2_discount.js`
-- `sample-app/src/scenario_3_validator.js`
-- `sample-app/src/scenario_4_csvLegacyParser.js`
-- Matching tests live in `sample-app/tests/` with the same numbered names.
+- `docs/` — presenter guidance, walkthroughs, and troubleshooting
+- `scripts/` — setup, preflight, reset, mode switching, commit-guard helpers, and snapshot management
+- `scenarios/scenarios.json` — Copilot CLI scenario registry
+- `scenarios/ide-chat-scenarios.json` — VS Code Copilot Chat scenario registry
+- `sample-app/` — shared Node.js demo app used by both tracks
+- `.githooks/` — pre-commit safeguard installed by setup
+- `.github/copilot-instructions.md` — optional repo customization for Chat demos
 
 ## Quick start
-| Step | Purpose |
-| :--- | :--- |
-| 1. `cd swiss-army-knife-copilot-cli` | Enters the project root directory |
-| 2. `bash scripts/demo-first-run.sh` | Runs preflight, enables reset mode, creates snapshots, and lands on scenario 0 |
-| 3. Open a terminal in `sample-app` and run `npm install` | Prepares Node.js app dependencies (none by default) |
-| 4. Start the walkthrough in `docs/walkthrough.md` | Begins the guided demo |
+1. Clone the repo.
+2. Run `bash scripts/demo-setup.sh`
+3. Choose a track:
+   - **CLI track:** follow `docs/walkthrough.md` and `scenarios/scenarios.json`
+   - **IDE Chat track:** open the repo in VS Code and follow `docs/vscode-copilot-chat.md` and `scenarios/ide-chat-scenarios.json`
+4. When the demo is over, run `bash scripts/demo-clean-slate.sh`
 
-## Two main scripts
+## Setup/bootstrap behavior
+`bash scripts/demo-setup.sh` is the primary setup command. It is intentionally safe and idempotent.
 
-- `bash scripts/demo-first-run.sh`
-	- Use right after cloning.
-	- Runs preflight checks.
-	- Sets demo mode to `reset`.
-	- Creates missing `scenario-N-init` branches.
-	- Resets the repo to `scenario-0-init`.
+It will:
+- run a combined preflight for Git, Node.js, npm, GitHub CLI, Copilot CLI, and VS Code availability
+- install `sample-app` dependencies with `npm install`
+- install the pre-commit safeguard via `git config core.hooksPath .githooks`
+- set demo mode back to `reset`
+- record the local baseline branch in `.demo-baseline-branch`
+- ensure the CLI snapshot branches exist
+- reset the sandbox to `scenario-0-init`
 
-- `bash scripts/demo-flush.sh`
-	- Use when you are done practicing or presenting and want the sandbox back in its prepared baseline state.
-	- Returns to `main`, cleans the working tree, ensures reset mode, ensures snapshot branches exist, and resets to `scenario-0-init`.
-	- Pass `--refresh` if you intentionally changed `main` and want all snapshot branches rebuilt from it.
+Notes:
+- Missing **Git**, **Node.js**, or **npm** is a hard failure.
+- Missing **Copilot CLI**, **VS Code**, or **GitHub auth/extensions** produces clear warnings so you can finish setup manually.
+- The setup flow is local-first. It checks and prepares tools; it does not attempt brittle cross-platform package installs for you.
 
-## Demo modes
-- reset (default): always restore exact baseline state before a scenario
-- append: keep current changes and continue iteratively
+## Full clean-slate reset
+`bash scripts/demo-clean-slate.sh` is the primary “reset everything” command.
 
-## Branch model
-- `main` is the source of truth for the entire sandbox.
-- `scenario-0-init` through `scenario-4-init` are reset branches that mirror `main`.
-- Scripts, docs, sample app files, and helper shell files are intended to be the same across all branches.
-- Scenario differences come from which prompt you run, not from branch-specific file layouts.
-- If you add or change repo files, run `bash scripts/init-snapshots.sh --refresh` (from `main`) to refresh all scenario branches from `main`.
+It will:
+- restore demo mode to `reset`
+- re-enable the default commit safeguard
+- return to the recorded baseline branch
+- discard tracked demo edits and remove untracked non-ignored files
+- ensure the scenario snapshot branches exist
+- reset the repo to `scenario-0-init`
 
-Snapshot safety behavior:
+Use `--refresh` only when you intentionally changed the baseline branch and want all `scenario-N-init` branches rebuilt from it.
 
-- `bash scripts/init-snapshots.sh` creates missing `scenario-N-init` branches only.
-- It does not auto-commit your local changes.
-- It does not move existing scenario branches unless you pass `--refresh`.
+## Commit safeguard
+This repo is designed to block accidental demo commits by default.
 
-Switch modes:
+### Default behavior
+- Setup installs `.githooks/pre-commit`
+- The hook blocks commits unless you intentionally opt in
 
-- bash scripts/demo-mode.sh reset
-- bash scripts/demo-mode.sh append
+### Intentionally allow a commit
+Option 1:
+1. `bash scripts/allow-commits.sh`
+2. commit normally
+3. `bash scripts/block-commits.sh`
 
-## Typical live run
-1. bash scripts/demo-reset.sh 1
-2. cd sample-app
-3. copilot
-4. Use prompt text from scenarios/scenarios.json
-5. Verify with npm run test:1
+Option 2:
+1. `ALLOW_DEMO_COMMIT=1 git commit ...`
 
-## When you're done with the demo
+This makes ad-hoc demo edits much harder to commit accidentally from either the terminal or the IDE.
 
-If you want the sandbox back in a clean, prepared state for the next run:
+## Demo tracks
+### 1) Copilot CLI track
+Keep using the numbered CLI scenarios in `scenarios/scenarios.json`.
 
-1. `bash scripts/demo-flush.sh`
+Typical flow:
+1. `bash scripts/run-scenario.sh 1`
+2. `cd sample-app`
+3. `copilot`
+4. use the scenario prompt from the registry
+5. run the scenario-specific verification command, such as `npm run test:1`
 
-If you changed repo files on `main` and want every scenario branch refreshed from that updated baseline:
+### 2) VS Code Copilot Chat track
+Open the repository in VS Code and use the curated scenarios in `scenarios/ide-chat-scenarios.json`.
 
-1. Make sure your working tree is clean enough to switch to `main`
-2. `bash scripts/demo-flush.sh --refresh`
+Included Chat demos:
+- `/explain` on the CSV parser
+- `/fix` on the discount bug
+- `/tests` for an untested utility
+- `@workspace` for repo-wide reasoning
+- optional repo customization with `.github/copilot-instructions.md`
 
-Use `--refresh` only when you intentionally want to move existing `scenario-N-init` branches to match the current `main` branch.
+Start here:
+- `docs/vscode-copilot-chat.md`
+- `scenarios/ide-chat-scenarios.json`
 
-## If you need to reset a scenario
+## Shared sample app
+`sample-app/` stays as the shared codebase for both tracks.
 
-If a scenario gets messy during a demo or practice run:
+Scenario files:
+- `src/scenario_1_calculator.js`
+- `src/scenario_2_discount.js`
+- `src/scenario_3_validator.js`
+- `src/scenario_4_csvLegacyParser.js`
+- `src/ide_chat_releaseNotes.js` (untested utility for `/tests` demos)
 
-1. Return to the repo root
-2. Run `bash scripts/demo-reset.sh <scenario-id>`
-
-Examples:
-
-- `bash scripts/demo-reset.sh 1`
-- `bash scripts/demo-reset.sh 2`
-- `bash scripts/demo-reset.sh 3`
-- `bash scripts/demo-reset.sh 4`
-
-This restores that scenario back to its baseline branch so you can retry the prompt from a known clean state.
-
-If reset does not happen, check whether append mode is enabled:
-
-1. Run `bash scripts/demo-mode.sh reset`
-2. Re-run `bash scripts/demo-reset.sh <scenario-id>`
+Matching tests live in `sample-app/tests/` for the numbered CLI scenarios.
 
 ## Test commands
-- `npm run test:1` runs only scenario 1 tests.
-- `npm run test:2` runs only scenario 2 tests.
-- `npm run test:3` runs only scenario 3 tests.
-- `npm run test:4` runs only scenario 4 tests.
-- `npm run test:all` runs the full suite.
-- `npm test` also runs the full suite.
+Run from `sample-app/`:
+- `npm run test:1`
+- `npm run test:2`
+- `npm run test:3`
+- `npm run test:4`
+- `npm run test:baseline`
+- `npm run test:all`
+- `npm test`
 
-## Scenario behavior notes
-- Scenario 1 starts green and is meant for a refactor-only demo.
-- Scenario 2 starts with an intentional bug so the failure is visible before the fix.
-- Scenario 3 includes expanded validation coverage.
-- Scenario 4 includes expanded malformed-row parser coverage.
+`npm run test:baseline` is the “presenter baseline” suite. Scenario 2 still exists as an intentional fix exercise, so it stays separate.
+
+## Additional docs
+- `docs/overview.md`
+- `docs/walkthrough.md`
+- `docs/vscode-copilot-chat.md`
+- `docs/speaker-script.md`
+- `docs/troubleshooting.md`
 
 ## Notes
-
-- The scripts are designed for macOS and bash/zsh terminals.
-- If you are presenting, follow docs/speaker-script.md line by line.
-- If you ever notice a helper script missing after a reset, run `bash scripts/init-snapshots.sh` from `main` and reset again.
+- The reset model is local-first and presenter-friendly.
+- Snapshot branches now follow a recorded baseline branch instead of assuming `main` always exists locally.
+- If you intentionally update the repo baseline, run `bash scripts/demo-clean-slate.sh --refresh` from the baseline branch.

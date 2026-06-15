@@ -3,8 +3,7 @@
 # Usage: bash scripts/demo-reset.sh <scenario-id>
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-MODE_FILE="$ROOT_DIR/.demo-mode"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/demo-common.sh"
 SCENARIO_ID="${1:-}"
 
 if [ -z "$SCENARIO_ID" ]; then
@@ -12,15 +11,11 @@ if [ -z "$SCENARIO_ID" ]; then
   exit 1
 fi
 
-if [ -f "$MODE_FILE" ]; then
-  MODE="$(cat "$MODE_FILE")"
-else
-  MODE="reset"
-fi
-
+MODE="$(current_demo_mode)"
 TARGET_BRANCH="scenario-${SCENARIO_ID}-init"
 
 cd "$ROOT_DIR"
+ensure_git_repo
 
 if [ "$MODE" = "append" ]; then
   echo "Append mode enabled. Skipping hard reset."
@@ -28,18 +23,15 @@ if [ "$MODE" = "append" ]; then
   exit 0
 fi
 
-if [ ! -d .git ]; then
-  echo "Git repo not initialized. Run: git init"
-  exit 1
-fi
-
-if git show-ref --verify --quiet "refs/heads/$TARGET_BRANCH"; then
-  git reset --hard HEAD >/dev/null
-  git clean -fd >/dev/null
-  git checkout "$TARGET_BRANCH" >/dev/null
-  git reset --hard "$TARGET_BRANCH" >/dev/null
-  echo "Reset complete. Active branch: $TARGET_BRANCH"
-else
+if ! git show-ref --verify --quiet "refs/heads/$TARGET_BRANCH"; then
   echo "Branch $TARGET_BRANCH not found. Run: bash scripts/init-snapshots.sh"
   exit 1
 fi
+
+bash "$ROOT_DIR/scripts/block-commits.sh" >/dev/null
+git reset --hard HEAD >/dev/null
+git clean -fd >/dev/null
+git checkout "$TARGET_BRANCH" >/dev/null
+git reset --hard "$TARGET_BRANCH" >/dev/null
+
+echo "Reset complete. Active branch: $TARGET_BRANCH"
