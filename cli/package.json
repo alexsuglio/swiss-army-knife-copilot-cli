@@ -1,18 +1,15 @@
 {
-  "name": "copilot-cli-demo-sample-app",
+  "name": "copilot-cli-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "Sample app for Copilot CLI and Copilot Chat demo scenarios",
   "type": "module",
   "scripts": {
     "test": "node --test tests/**/*.test.js",
-    "test:all": "node --test tests/**/*.test.js",
-    "test:baseline": "node --test tests/scenario_1_calculator.test.js tests/scenario_3_validator.test.js tests/scenario_4_csvLegacyParser.test.js",
     "test:1": "node --test tests/scenario_1_calculator.test.js",
     "test:2": "node --test tests/scenario_2_discount.test.js",
     "test:3": "node --test tests/scenario_3_validator.test.js",
     "test:4": "node --test tests/scenario_4_csvLegacyParser.test.js",
-    "test:watch": "node --test --watch tests/**/*.test.js"
+    "test:baseline": "node --test tests/scenario_1_calculator.test.js tests/scenario_3_validator.test.js tests/scenario_4_csvLegacyParser.test.js"
   },
   "engines": {
     "node": ">=20"
