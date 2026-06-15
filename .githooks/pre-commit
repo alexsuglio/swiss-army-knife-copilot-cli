@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+OVERRIDE_FILE="$ROOT_DIR/.demo-allow-commits"
+ALLOW_CONFIG="$(git -C "$ROOT_DIR" config --bool --get demo.allowCommits 2>/dev/null || echo false)"
+
+if [ "${ALLOW_DEMO_COMMIT:-}" = "1" ] || [ -f "$OVERRIDE_FILE" ] || [ "$ALLOW_CONFIG" = "true" ]; then
+  exit 0
+fi
+
+cat <<'MSG'
+[demo-guard] Commit blocked to protect the reusable demo sandbox.
+
+To intentionally commit from this repository:
+  bash scripts/allow-commits.sh
+  git commit ...
+
+When you are done, turn the safeguard back on:
+  bash scripts/block-commits.sh
+
+For a one-off terminal commit, you can also run:
+  ALLOW_DEMO_COMMIT=1 git commit ...
+MSG
+
+exit 1

@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 .demo-mode
+.demo-baseline-branch
+.demo-allow-commits

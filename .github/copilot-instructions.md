@@ -7,3 +7,5 @@
 - Ask for confirmation before destructive actions.
 - When tests exist, run or suggest running tests after edits.
 - If uncertain, propose two safe options and recommend one.
+- Preserve intentional demo imperfections unless the scenario explicitly asks you to fix them.
+- Prefer repository scripts for setup, reset, and commit-safety workflows.
