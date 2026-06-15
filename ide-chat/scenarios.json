@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "track": "vscode-chat",
+  "scenarios": [
+    {
+      "id": "chat-1",
+      "name": "Explain unfamiliar parser",
+      "objective": "Use /explain to understand legacy-ish code before editing anything.",
+      "files": ["src/scenario_4_csvLegacyParser.js"],
+      "prompts": [
+        "/explain #file:ide-chat/src/scenario_4_csvLegacyParser.js",
+        "Explain how this parser treats malformed rows and what tradeoffs it makes."
+      ],
+      "verify": "No file changes required. Confirm the explanation mentions blank lines, trimming, and malformed row handling.",
+      "fallback": "Highlight the reduce block and ask: /explain #selection"
+    },
+    {
+      "id": "chat-2",
+      "name": "Fix a targeted bug",
+      "objective": "Use /fix or a focused prompt to repair a known bug with minimal change.",
+      "files": ["src/scenario_2_discount.js"],
+      "prompts": [
+        "/fix The discount helper is adding the wrong amount after rounding. Make the smallest change that makes the failing tests pass.",
+        "Read src/scenario_2_discount.js, find the root cause of the rounding bug, and suggest the smallest safe patch."
+      ],
+      "verify": "cd ide-chat && node --test tests/scenario_2_discount.test.js (create test file first or use cli/ tests as reference)",
+      "fallback": "Show the applyDiscount function and ask Chat to find the off-by-one."
+    },
+    {
+      "id": "chat-3",
+      "name": "Generate tests for an untested utility",
+      "objective": "Use /tests to generate a first test suite for a utility with no tests.",
+      "files": ["src/ide_chat_releaseNotes.js"],
+      "prompts": [
+        "/tests #file:ide-chat/src/ide_chat_releaseNotes.js",
+        "Generate node:test coverage for empty input, trimming, optional highlights, and skipped invalid entries in ide_chat_releaseNotes.js."
+      ],
+      "verify": "Save the new file under ide-chat/tests/ and run: node --test ide-chat/tests/<new-file>.test.js",
+      "fallback": "Ask Copilot to propose test cases first, then ask it to turn them into node:test tests."
+    },
+    {
+      "id": "chat-4",
+      "name": "Multi-file reasoning with @workspace",
+      "objective": "Use @workspace to trace behavior across scripts, source files, tests, and scenarios.",
+      "prompts": [
+        "@workspace Where do setup, cleanup, and test verification commands live in this repo?",
+        "@workspace If I want to explain how pricing, validation, and parser behavior are covered here, which files should I show and why?"
+      ],
+      "verify": "Answer should cite multiple files across cli/ and ide-chat/ (not just one).",
+      "fallback": "Use #file references for cli/scenarios.json, cli/src/scenario_2_discount.js, and ide-chat/src/ide_chat_releaseNotes.js, then ask the same question."
+    },
+    {
+      "id": "chat-5",
+      "name": "Repository instructions walkthrough",
+      "objective": "Show how repo-level Copilot instructions shape Chat responses for this sandbox.",
+      "files": [".github/copilot-instructions.md"],
+      "prompts": [
+        "What repo-level Copilot instructions are active here, and how should they affect your edits?",
+        "Using the repository instructions, propose a safe plan for fixing the bug in ide-chat/src/scenario_2_discount.js without broad refactors."
+      ],
+      "verify": "Response should mention minimal edits, testing after changes, and avoiding unrelated churn.",
+      "fallback": "Open .github/copilot-instructions.md and ask Chat to summarize the top three rules it will follow."
+    }
+  ]
+}

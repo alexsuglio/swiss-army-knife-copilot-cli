@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "track": "cli",
+  "scenarios": [
+    {
+      "id": 0,
+      "name": "Warmup Explain",
+      "objective": "Show read-only command explanation — no file changes.",
+      "prompt": "Explain this command and what each part does: find . -type f -name '*.js' | xargs grep -n 'TODO'",
+      "verify": "git status should stay clean.",
+      "fallback": "Use: Explain ls -la"
+    },
+    {
+      "id": 1,
+      "name": "Refactor",
+      "objective": "Refactor imperative loop to reduce while keeping behavior.",
+      "files": ["src/scenario_1_calculator.js"],
+      "prompt": "Refactor totalPrice in src/scenario_1_calculator.js to use reduce, keep behavior unchanged, and keep code easy to read.",
+      "verify": "npm run test:1",
+      "fallback": "Ask Copilot to propose the patch first, then apply after review."
+    },
+    {
+      "id": 2,
+      "name": "Bug Fix",
+      "objective": "Diagnose and fix an edge-case bug from a failing test.",
+      "files": ["src/scenario_2_discount.js", "tests/scenario_2_discount.test.js"],
+      "prompt": "Several tests in tests/scenario_2_discount.test.js are failing. Find the bug in src/scenario_2_discount.js and fix only the root cause.",
+      "verify": "npm run test:2",
+      "fallback": "Paste failing stack trace into Copilot and ask for minimal fix."
+    },
+    {
+      "id": 3,
+      "name": "Feature Add",
+      "objective": "Add a validator and tests from a concise natural-language requirement.",
+      "files": ["src/scenario_3_validator.js", "tests/scenario_3_validator.test.js"],
+      "prompt": "Add validateUserProfile to src/scenario_3_validator.js. Required fields: id, name, email. Return { ok, errors }. Add tests for valid input, missing fields, invalid email, and whitespace-only values.",
+      "verify": "npm run test:3",
+      "fallback": "Ask Copilot to generate tests first, then implement to satisfy tests."
+    },
+    {
+      "id": 4,
+      "name": "Advanced Multi-step",
+      "objective": "Show agentic flow: test, refactor parser, document result.",
+      "files": ["src/scenario_4_csvLegacyParser.js", "tests/scenario_4_csvLegacyParser.test.js"],
+      "prompt": "Create or expand tests for src/scenario_4_csvLegacyParser.js, refactor parsing to be safer for malformed rows, and add a short inline comment describing the behavior changes.",
+      "verify": "npm run test:4",
+      "fallback": "Time-box to tests only if latency is high."
+    }
+  ]
+}

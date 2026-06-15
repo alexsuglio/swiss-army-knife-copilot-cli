@@ -10,17 +10,10 @@ if [ "${ALLOW_DEMO_COMMIT:-}" = "1" ] || [ -f "$OVERRIDE_FILE" ] || [ "$ALLOW_CO
 fi
 
 cat <<'MSG'
-[demo-guard] Commit blocked to protect the reusable demo sandbox.
+[demo-guard] Commit blocked to protect the demo sandbox.
 
-To intentionally commit from this repository:
-  bash scripts/allow-commits.sh
-  git commit ...
-
-When you are done, turn the safeguard back on:
-  bash scripts/block-commits.sh
-
-For a one-off terminal commit, you can also run:
-  ALLOW_DEMO_COMMIT=1 git commit ...
+To intentionally commit, prefix your command with ALLOW_DEMO_COMMIT=1:
+  ALLOW_DEMO_COMMIT=1 git commit -m "..."
 MSG
 
 exit 1
