@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseCsv } from '../src/scenario_4_csvLegacyParser.js';
+import { parseCsv } from '../src/scenario_4_cli_csvLegacyParser.js';
 
 test('parses a simple csv table into records', () => {
   const result = parseCsv('id,name\n1,Alex\n2,Sam');

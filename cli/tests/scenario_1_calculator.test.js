@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { totalPrice } from '../src/scenario_1_calculator.js';
+import { totalPrice } from '../src/scenario_1_cli_calculator.js';
 
 test('computes the total for multiple line items', () => {
   const total = totalPrice([

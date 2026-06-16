@@ -8,10 +8,10 @@ Open this repo in VS Code, then open Copilot Chat (`Ctrl+Alt+I` / `Cmd+Shift+I`)
 ## Scenarios
 
 ### chat-1 · Explain unfamiliar parser
-**File:** `ide-chat/src/scenario_4_csvLegacyParser.js`
+**File:** `ide-chat/src/scenario_1_ide-chat_csvLegacyParser.js`
 
 ```
-/explain #file:ide-chat/src/scenario_4_csvLegacyParser.js
+/explain #file:ide-chat/src/scenario_1_ide-chat_csvLegacyParser.js
 ```
 or
 ```
@@ -23,29 +23,29 @@ Explain how this parser treats malformed rows and what tradeoffs it makes.
 ---
 
 ### chat-2 · Fix a targeted bug
-**File:** `ide-chat/src/scenario_2_discount.js`
+**File:** `ide-chat/src/scenario_2_ide-chat_discount.js`
 
 ```
 /fix The discount helper is adding the wrong amount after rounding. Make the smallest change that makes the tests pass.
 ```
 or
 ```
-Read src/scenario_2_discount.js, find the root cause of the rounding bug, and suggest the smallest safe patch.
+Read src/scenario_2_ide-chat_discount.js, find the root cause of the rounding bug, and suggest the smallest safe patch.
 ```
-**Verify:** `node --test ide-chat/tests/scenario_2_discount.test.js` (copy test from cli/tests/ if needed)  
+**Verify:** `node --test ide-chat/tests/scenario_2_discount.test.js` (same `ide-chat/tests/` folder used in chat-3)  
 **Fallback:** Show the `applyDiscount` function and ask Chat to find the off-by-one.
 
 ---
 
 ### chat-3 · Generate tests for an untested utility
-**File:** `ide-chat/src/ide_chat_releaseNotes.js`
+**File:** `ide-chat/src/scenario_3_ide-chat_releaseNotes.js`
 
 ```
-/tests #file:ide-chat/src/ide_chat_releaseNotes.js
+/tests #file:ide-chat/src/scenario_3_ide-chat_releaseNotes.js
 ```
 or
 ```
-Generate node:test coverage for empty input, trimming, optional highlights, and skipped invalid entries in ide_chat_releaseNotes.js.
+Generate node:test coverage for empty input, trimming, optional highlights, and skipped invalid entries in scenario_3_ide-chat_releaseNotes.js.
 ```
 **Verify:** Save the new test file to `ide-chat/tests/` → `node --test ide-chat/tests/<new-file>.test.js`  
 **Fallback:** Ask Copilot to list test cases first, then ask it to write `node:test` code.
@@ -61,7 +61,7 @@ or
 @workspace If I want to explain how pricing, validation, and parser behavior are covered here, which files should I show and why?
 ```
 **Verify:** Response cites files in both `cli/` and `ide-chat/`.  
-**Fallback:** Use `#file` references for `cli/scenarios.json`, `cli/src/scenario_2_discount.js`, and `ide-chat/src/ide_chat_releaseNotes.js`.
+**Fallback:** Use `#file` references for `cli/scenarios.json`, `cli/src/scenario_2_cli_discount.js`, and `ide-chat/src/scenario_3_ide-chat_releaseNotes.js`.
 
 ---
 
@@ -73,7 +73,7 @@ What repo-level Copilot instructions are active here, and how should they affect
 ```
 or
 ```
-Using the repository instructions, propose a safe plan for fixing the bug in ide-chat/src/scenario_2_discount.js without broad refactors.
+Using the repository instructions, propose a safe plan for fixing the bug in ide-chat/src/scenario_2_ide-chat_discount.js without broad refactors.
 ```
 **Verify:** Response mentions minimal edits, testing after changes, and avoiding unrelated churn.  
 **Fallback:** Open `.github/copilot-instructions.md` → ask Chat to summarize the top three rules.

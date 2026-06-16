@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { validateUserProfile } from '../src/scenario_3_validator.js';
+import { validateUserProfile } from '../src/scenario_3_cli_validator.js';
 
 test('returns ok for a valid profile', () => {
   const result = validateUserProfile({

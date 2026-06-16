@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { applyDiscount } from '../src/scenario_2_cli_discount.js';
+import { applyDiscount } from '../src/scenario_2_ide-chat_discount.js';
 
 test('applies a standard percentage discount', () => {
   assert.equal(applyDiscount(100, 20), 80);
